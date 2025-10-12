@@ -1,10 +1,12 @@
 # Fast Inference with vLLM - Quick Start Guide
 
 ## Problem
+
 - One-by-one predictions take **30+ hours** ⏰
 - This is NOT practical for 75,000 test samples
 
 ## Solution: vLLM Batched Inference ⚡
+
 With vLLM on A100, predictions take **MINUTES** instead of hours!
 
 ---
@@ -12,11 +14,13 @@ With vLLM on A100, predictions take **MINUTES** instead of hours!
 ## Step-by-Step Instructions
 
 ### 1️⃣ Complete Training (in Jupyter/Colab)
+
 Run all cells in `Granite4_0.ipynb` up to and including the model saving cell.
 
 This will create: `granite_price_predictor_vllm/` folder
 
 ### 2️⃣ Install vLLM
+
 ```bash
 # Install vLLM (only needed once)
 pip install vllm
@@ -26,6 +30,7 @@ pip install vllm torch transformers
 ```
 
 ### 3️⃣ Run Fast Inference
+
 ```bash
 # Run the vLLM inference script
 python vllm_fast_inference.py
@@ -37,10 +42,10 @@ That's it! You'll get `submission_granite_vllm.csv` in minutes! 🎉
 
 ## Performance Comparison
 
-| Method | Time | Speed |
-|--------|------|-------|
-| One-by-one (original) | **30+ hours** | ~0.7 samples/sec |
-| vLLM batched (A100) | **5-10 minutes** | ~150+ samples/sec |
+| Method                | Time             | Speed             |
+| --------------------- | ---------------- | ----------------- |
+| One-by-one (original) | **30+ hours**    | ~0.7 samples/sec  |
+| vLLM batched (A100)   | **5-10 minutes** | ~150+ samples/sec |
 
 **Speed up: ~200x faster!** 🚀
 
@@ -84,14 +89,17 @@ That's it! You'll get `submission_granite_vllm.csv` in minutes! 🎉
 ## Troubleshooting
 
 ### Error: "Model not found"
+
 - Make sure you ran the training notebook and saved the model
 - Check that `granite_price_predictor_vllm/` folder exists
 
 ### Error: "CUDA out of memory"
+
 - Reduce `gpu_memory_utilization=0.9` to `0.7` in the script
 - Or use `tensor_parallel_size=2` if you have 2 GPUs
 
 ### Predictions seem wrong
+
 - Check that text cleaning function matches training
 - Verify the price extraction regex patterns
 - Look at a few raw model outputs to debug
@@ -101,6 +109,7 @@ That's it! You'll get `submission_granite_vllm.csv` in minutes! 🎉
 ## Advanced Options
 
 ### Use Multiple GPUs
+
 ```python
 llm = LLM(
     model="granite_price_predictor_vllm",
@@ -110,7 +119,9 @@ llm = LLM(
 ```
 
 ### Adjust Batch Size
+
 vLLM automatically optimizes batch size, but you can tune:
+
 ```python
 sampling_params = SamplingParams(
     temperature=0.1,
@@ -129,12 +140,14 @@ sampling_params = SamplingParams(
 4. **Dynamic Batching**: Automatically groups requests for efficiency
 
 Instead of:
+
 ```
 for sample in test_data:  # 75,000 iterations
     predict(sample)        # Each takes ~1.4 seconds
 ```
 
 vLLM does:
+
 ```
 outputs = llm.generate(all_prompts)  # Single batched call!
 ```
