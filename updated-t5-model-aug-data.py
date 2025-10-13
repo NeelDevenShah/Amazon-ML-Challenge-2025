@@ -20,8 +20,8 @@ warnings.filterwarnings('ignore')
 pl.seed_everything(42)  # for reproducibility
 
 # TUNED: Hyperparameters adjusted for better performance
-MODEL_NAME = 't5-large'
-BATCH_SIZE = 55
+MODEL_NAME = 't5-3b'
+BATCH_SIZE = 40
 LEARNING_RATE = 3e-5  # Lower learning rate for more stable fine-tuning
 MAX_EPOCHS = 50
 SOURCE_MAX_LEN = 256
@@ -74,6 +74,8 @@ def clean_text_enhanced(text):
     cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
     
     return cleaned_text.strip()
+
+from transformers import Adafactor
 
 # --- PyTorch Dataset Class ---
 class T5PriceDataset(Dataset):
@@ -165,20 +167,18 @@ class T5PricePredictor(pl.LightningModule):
         self.validation_step_outputs.clear()
 
     def configure_optimizers(self):
-        # CORRECTED: Access hyperparameters via self.hparams
-        optimizer = AdamW(self.parameters(), lr=self.hparams.learning_rate, weight_decay=0.01)
-
-        num_gpus = self.trainer.num_devices if self.trainer else 1
-        effective_batch_size = self.hparams.batch_size * num_gpus
-        num_training_steps = (self.hparams.train_dataset_len // effective_batch_size) * self.hparams.max_epochs
-
-        num_warmup_steps = int(num_training_steps * 0.05)
-
-        scheduler = get_linear_schedule_with_warmup(
-            optimizer, num_warmup_steps=num_warmup_steps, num_training_steps=num_training_steps
+        # Using Adafactor for memory efficiency
+        optimizer = Adafactor(
+            self.parameters(),
+            lr=None, # Adafactor can work without a learning rate
+            relative_step=True,
+            warmup_init=True
         )
-        return [optimizer], [{"scheduler": scheduler, "interval": "step"}]
     
+        # A scheduler is often not necessary with Adafactor's relative_step=True,
+        # but you can still use one if you prefer.
+        return [optimizer]
+
 # 1. Load Data
 train_df = pd.read_csv('/root/train.csv', encoding='latin1')
 test_df = pd.read_csv('/root/test.csv', encoding='latin1')
