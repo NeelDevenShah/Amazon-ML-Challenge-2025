@@ -43,34 +43,6 @@ def to_float(price_str):
     except (ValueError, TypeError):
         return 0.0
 
-# --- Enhanced text cleaning function ---
-def clean_text_enhanced(text):
-    """Cleans and structures the catalog content to extract key information."""
-    if pd.isnull(text):
-        return ""
-    
-    item_name = re.search(r"Item Name:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
-    bp1 = re.search(r"Bullet Point\s*1:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
-    bp2 = re.search(r"Bullet Point\s*2:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
-    prod_desc = re.search(r"Product Description:\s*(.*?)(?=\nValue:|\nUnit:|$)", text, re.DOTALL | re.IGNORECASE)
-    value = re.search(r"Value:\s*([\d.,]+)", text, re.IGNORECASE)
-    unit = re.search(r"Unit:\s*([A-Za-z]+)", text, re.IGNORECASE)
-    
-    structured_parts = []
-    if item_name: structured_parts.append(f"Item: {item_name.group(1).strip()}")
-    if bp1: structured_parts.append(f"Feature: {bp1.group(1).strip()}")
-    if bp2: structured_parts.append(f"Detail: {bp2.group(1).strip()}")
-    if prod_desc: structured_parts.append(f"Description: {prod_desc.group(1).strip()[:300]}")
-    if value and unit: structured_parts.append(f"Quantity: {value.group(1).strip()} {unit.group(1).strip()}")
-    elif value: structured_parts.append(f"Value: {value.group(1).strip()}")
-    
-    cleaned_text = ". ".join(structured_parts)
-    cleaned_text = cleaned_text.lower()
-    cleaned_text = re.sub(r'[^\w\s.,:]', ' ', cleaned_text)
-    cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
-    
-    return cleaned_text.strip()
-
 # --- PyTorch Dataset Class ---
 class T5PriceDataset(Dataset):
     """PyTorch Dataset for T5 model."""
@@ -169,8 +141,9 @@ test_df = pd.read_csv('/root/test.csv', encoding='latin1')
 
 # 2. Preprocess and Format
 print("Applying enhanced text cleaning to extract key features...")
-train_df['cleaned_content'] = train_df['catalog_content'].astype(str).apply(clean_text_enhanced)
-test_df['cleaned_content'] = test_df['catalog_content'].astype(str).apply(clean_text_enhanced)
+train_df['catalog_content'] = train_df['catalog_content'].astype(str)
+test_df['catalog_content'] = test_df['catalog_content'].astype(str)
+
 train_df['t5_input'] = "predict price: " + train_df['cleaned_content']
 train_df['t5_target'] = train_df['price'].astype(str)
 test_df['t5_input'] = "predict price: " + test_df['cleaned_content']
