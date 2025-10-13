@@ -20,7 +20,7 @@ import warnings
 warnings.filterwarnings('ignore')
 pl.seed_everything(42)
 
-MODEL_NAME = 'google/flan-t5-xl'
+MODEL_NAME = 't5-3b'
 BATCH_SIZE = 32
 LEARNING_RATE = 3e-5
 MAX_EPOCHS = 50
@@ -191,7 +191,7 @@ class T5EncoderMLPLogPredictor(pl.LightningModule):
 # --- Main Execution ---
 if __name__ == '__main__':
     print("=" * 80)
-    print("APPROACH 1: Flan-T5 Encoder + MLP + Log-Transform")
+    print("APPROACH 1: T5-3B Encoder + MLP + Log-Transform")
     print("=" * 80)
     
     # 1. Load Data
@@ -240,7 +240,7 @@ if __name__ == '__main__':
     )
 
     # 7. Train
-    print("\n🚀 Training Flan-T5 Encoder + MLP with Log-Transform...")
+    print("\n🚀 Training T5-3B Encoder + MLP with Log-Transform...")
     trainer.fit(model, train_loader, val_loader)
 
     # 8. Inference

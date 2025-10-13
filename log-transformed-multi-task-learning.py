@@ -20,7 +20,7 @@ import warnings
 warnings.filterwarnings('ignore')
 pl.seed_everything(42)
 
-MODEL_NAME = 't5-3b'
+MODEL_NAME = 'google/flan-t5-xl'
 BATCH_SIZE = 32
 LEARNING_RATE = 3e-5
 MAX_EPOCHS = 50
@@ -81,6 +81,34 @@ def bucket_to_price(bucket_idx):
     upper = PRICE_BUCKETS[bucket_idx + 1]
     # Use geometric mean for better estimate across log-spaced buckets
     return np.sqrt(lower * upper) if lower > 0 else upper / 2
+
+# --- Enhanced text cleaning ---
+def clean_text_enhanced(text):
+    """Extract key information from catalog content."""
+    if pd.isnull(text):
+        return ""
+    
+    item_name = re.search(r"Item Name:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
+    bp1 = re.search(r"Bullet Point\s*1:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
+    bp2 = re.search(r"Bullet Point\s*2:\s*(.*?)(?=\n|$)", text, re.IGNORECASE)
+    prod_desc = re.search(r"Product Description:\s*(.*?)(?=\nValue:|\nUnit:|$)", text, re.DOTALL | re.IGNORECASE)
+    value = re.search(r"Value:\s*([\d.,]+)", text, re.IGNORECASE)
+    unit = re.search(r"Unit:\s*([A-Za-z]+)", text, re.IGNORECASE)
+    
+    structured_parts = []
+    if item_name: structured_parts.append(f"Item: {item_name.group(1).strip()}")
+    if bp1: structured_parts.append(f"Feature: {bp1.group(1).strip()}")
+    if bp2: structured_parts.append(f"Detail: {bp2.group(1).strip()}")
+    if prod_desc: structured_parts.append(f"Description: {prod_desc.group(1).strip()[:300]}")
+    if value and unit: structured_parts.append(f"Quantity: {value.group(1).strip()} {unit.group(1).strip()}")
+    elif value: structured_parts.append(f"Value: {value.group(1).strip()}")
+    
+    cleaned_text = ". ".join(structured_parts)
+    cleaned_text = cleaned_text.lower()
+    cleaned_text = re.sub(r'[^\w\s.,:]', ' ', cleaned_text)
+    cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
+    
+    return cleaned_text.strip()
 
 # --- Dataset ---
 class T5MultiTaskDataset(Dataset):
@@ -250,7 +278,7 @@ class T5MultiTaskPredictor(pl.LightningModule):
 # --- Main Execution ---
 if __name__ == '__main__':
     print("=" * 80)
-    print("APPROACH 2: T5-3B Multi-Task Learning (Price Buckets)")
+    print("APPROACH 2: Log-Transform + Multi-Task Learning")
     print("=" * 80)
     
     # 1. Load Data
@@ -259,14 +287,10 @@ if __name__ == '__main__':
 
     # 2. Preprocess
     print("\n📝 Applying enhanced text cleaning...")
-
-    train_df['catalog_content'] = train_df['catalog_content'].astype(str)
-    test_df['catalog_content'] = test_df['catalog_content'].astype(str)
-    
-    train_df['t5_input'] = "predict price: " + train_df['catalog_content']
-    train_df['t5_target'] = train_df['price'].astype(str)
-    test_df['t5_input'] = "predict price: " + test_df['catalog_content']
-
+    train_df['cleaned_content'] = train_df['catalog_content'].astype(str).apply(clean_text_enhanced)
+    test_df['cleaned_content'] = test_df['catalog_content'].astype(str).apply(clean_text_enhanced)
+    train_df['t5_input'] = "predict price class: " + train_df['cleaned_content']
+    test_df['t5_input'] = "predict price class: " + test_df['cleaned_content']
 
     # 3. Split
     train_split_df, val_df = train_test_split(train_df, test_size=0.15, random_state=42)
@@ -300,7 +324,7 @@ if __name__ == '__main__':
     )
 
     # 7. Train
-    print("\n🚀 Training T5-3B with Multi-Task Learning (Bucket Classification)...")
+    print("\n🚀 Training with Log-Transform + Multi-Task Learning...")
     trainer.fit(model, train_loader, val_loader)
 
     # 8. Inference
