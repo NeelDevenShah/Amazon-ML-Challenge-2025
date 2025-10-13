@@ -27,9 +27,19 @@ MAX_EPOCHS = 50
 SOURCE_MAX_LEN = 256
 TARGET_MAX_LEN = 8
 
-# Price buckets for classification
-PRICE_BUCKETS = [0, 10, 20, 50, 100, 500, 10000]
+# Price buckets - based on actual price distribution
+# More granular in 0-500 range where most data is, wider for long tail
+PRICE_BUCKETS = [0, 10, 25, 50, 100, 200, 350, 500, 1000, 3000]
 NUM_BUCKETS = len(PRICE_BUCKETS) - 1
+BUCKET_LABELS = [
+    f"class{i+1}_{int(PRICE_BUCKETS[i])}_to_{int(PRICE_BUCKETS[i+1])}" 
+    for i in range(NUM_BUCKETS)
+]
+
+# Print bucket information for clarity
+print("\n📦 Price Buckets:")
+for i, label in enumerate(BUCKET_LABELS):
+    print(f"   {label}")
 
 # --- SMAPE Metric ---
 def symmetric_mean_absolute_percentage_error(y_true, y_pred):
@@ -49,10 +59,28 @@ def to_float(price_str):
 
 def price_to_bucket(price):
     """Map price to bucket index."""
-    for i, upper_bound in enumerate(PRICE_BUCKETS[1:]):
-        if price < upper_bound:
+    for i in range(NUM_BUCKETS):
+        if price < PRICE_BUCKETS[i + 1]:
             return i
     return NUM_BUCKETS - 1
+
+def bucket_to_label(bucket_idx):
+    """Convert bucket index to class label."""
+    return BUCKET_LABELS[bucket_idx]
+
+def label_to_bucket(label):
+    """Convert class label to bucket index."""
+    try:
+        return BUCKET_LABELS.index(label)
+    except ValueError:
+        return 0
+
+def bucket_to_price(bucket_idx):
+    """Convert bucket index to approximate price (midpoint of bucket range)."""
+    lower = PRICE_BUCKETS[bucket_idx]
+    upper = PRICE_BUCKETS[bucket_idx + 1]
+    # Use geometric mean for better estimate across log-spaced buckets
+    return np.sqrt(lower * upper) if lower > 0 else upper / 2
 
 # --- Enhanced text cleaning ---
 def clean_text_enhanced(text):
@@ -110,13 +138,12 @@ class T5MultiTaskDataset(Dataset):
         if self.is_test:
             return result
 
-        # For training: add both exact price target and bucket classification
+        # For training: add bucket classification target
         price = float(self.data.iloc[index]['price'])
-        log_price = np.log1p(price)
         bucket_idx = price_to_bucket(price)
         
-        # Target for text generation (log-transformed price)
-        target_text = f"{log_price:.4f}"
+        # Target for text generation (bucket class label)
+        target_text = bucket_to_label(bucket_idx)
         target = self.tokenizer.batch_encode_plus(
             [target_text], max_length=self.target_max_len,
             padding='max_length', truncation=True, return_tensors='pt'
@@ -125,7 +152,6 @@ class T5MultiTaskDataset(Dataset):
         result.update({
             'labels': target['input_ids'].squeeze().to(dtype=torch.long),
             'price': torch.tensor(price, dtype=torch.float32),
-            'log_price': torch.tensor(log_price, dtype=torch.float32),
             'bucket_idx': torch.tensor(bucket_idx, dtype=torch.long)
         })
         
@@ -133,7 +159,7 @@ class T5MultiTaskDataset(Dataset):
 
 # --- Multi-Task Model ---
 class T5MultiTaskPredictor(pl.LightningModule):
-    """T5 with multi-task learning: exact log-price generation + bucket classification."""
+    """T5 with multi-task learning: bucket class generation + bucket classification."""
     def __init__(self, model_name, learning_rate, tokenizer, train_dataset_len, batch_size, max_epochs):
         super().__init__()
         self.save_hyperparameters(ignore=['tokenizer'])
@@ -158,7 +184,7 @@ class T5MultiTaskPredictor(pl.LightningModule):
         encoder_outputs = self.model.encoder(input_ids=input_ids, attention_mask=attention_mask)
         encoder_hidden = encoder_outputs.last_hidden_state
         
-        # Main T5 generation loss (for log-transformed price)
+        # Main T5 generation loss (for bucket class labels)
         outputs = self.model(
             input_ids=input_ids, 
             attention_mask=attention_mask, 
@@ -185,8 +211,8 @@ class T5MultiTaskPredictor(pl.LightningModule):
         # Auxiliary bucket classification loss
         bucket_loss = self.ce_loss(bucket_logits, batch['bucket_idx'])
         
-        # Combined loss: 80% generation, 20% bucket classification
-        total_loss = 0.8 * gen_loss + 0.2 * bucket_loss
+        # Combined loss: 70% generation, 30% bucket classification
+        total_loss = 0.7 * gen_loss + 0.3 * bucket_loss
         
         self.log('train_loss', total_loss, on_step=True, on_epoch=True, prog_bar=True)
         self.log('train_gen_loss', gen_loss, on_epoch=True)
@@ -200,7 +226,7 @@ class T5MultiTaskPredictor(pl.LightningModule):
         )
         
         bucket_loss = self.ce_loss(bucket_logits, batch['bucket_idx'])
-        total_loss = 0.8 * gen_loss + 0.2 * bucket_loss
+        total_loss = 0.7 * gen_loss + 0.3 * bucket_loss
         
         self.log('val_loss', total_loss, on_epoch=True, prog_bar=True)
         
@@ -215,9 +241,15 @@ class T5MultiTaskPredictor(pl.LightningModule):
         
         preds = [self.tokenizer.decode(g, skip_special_tokens=True) for g in generated_ids]
         
-        # Convert log predictions to actual prices
-        log_prices_pred = [to_float(p) for p in preds]
-        prices_pred = [np.expm1(lp) for lp in log_prices_pred]  # exp(log_price) - 1
+        # Convert class predictions to actual prices
+        prices_pred = []
+        for pred in preds:
+            try:
+                bucket_idx = label_to_bucket(pred)
+            except:
+                bucket_idx = 0
+            price = bucket_to_price(bucket_idx)
+            prices_pred.append(price)
         
         self.validation_step_outputs.append({
             'preds': np.array(prices_pred),
@@ -257,8 +289,8 @@ if __name__ == '__main__':
     print("\n📝 Applying enhanced text cleaning...")
     train_df['cleaned_content'] = train_df['catalog_content'].astype(str).apply(clean_text_enhanced)
     test_df['cleaned_content'] = test_df['catalog_content'].astype(str).apply(clean_text_enhanced)
-    train_df['t5_input'] = "predict log price: " + train_df['cleaned_content']
-    test_df['t5_input'] = "predict log price: " + test_df['cleaned_content']
+    train_df['t5_input'] = "predict price class: " + train_df['cleaned_content']
+    test_df['t5_input'] = "predict price class: " + test_df['cleaned_content']
 
     # 3. Split
     train_split_df, val_df = train_test_split(train_df, test_size=0.15, random_state=42)
@@ -319,9 +351,15 @@ if __name__ == '__main__':
                 early_stopping=True
             )
             preds = [tokenizer.decode(g, skip_special_tokens=True) for g in generated_ids]
-            log_prices = [to_float(p) for p in preds]
-            prices = [np.expm1(lp) for lp in log_prices]
-            predictions.extend(prices)
+            
+            # Convert class predictions to prices
+            for pred in preds:
+                try:
+                    bucket_idx = label_to_bucket(pred)
+                except:
+                    bucket_idx = 0
+                price = bucket_to_price(bucket_idx)
+                predictions.append(price)
 
     # 9. Submission
     test_df['price'] = np.array(predictions).clip(min=0)
