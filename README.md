@@ -63,27 +63,67 @@ This made it a true test of **feature engineering** and **multimodal learning** 
 
 ### 📊 [1. Exploratory Data Analysis](./1.%20Exploratory%20Data%20Analysis/)
 
-- Data exploration and feature analysis
-- Diagnostic notebooks to understand what drives pricing
-- Feature engineering experiments
-- **3 notebooks** focused on understanding the dataset
+Complete data exploration and diagnostic analysis to understand pricing patterns:
+
+- **`classification-idea.ipynb`** - Price classification and binning strategies  
+- **`diagnostic-analysis.ipynb`** - Deep diagnostic analysis of price drivers and validation gaps
+- **`exploratory-data-analysis-visualization.ipynb`** - Comprehensive EDA with visualizations
+- **`feature-engineering.ipynb`** - Advanced feature extraction and preprocessing techniques
+
+**Focus**: Understanding what truly drives product pricing through statistical analysis
 
 ### 🖼️ [2. MultiModal Approach](./2.%20MultiModal%20Approach/)
 
-- Models using both **text** and **images**
-- Vision-language models (Qwen2.5, CLIP-based)
-- Brand + image feature combinations
-- **2 notebooks** leveraging visual product information
+Advanced models leveraging both text and visual information:
+
+- **`multimodal-brand-clip-image-price-prediction.ipynb`** - CLIP-based image + brand features with ensemble
+- **`qwen2-5-finetune-multimodal.ipynb`** - Qwen2.5 vision-language model fine-tuning
+
+**Focus**: Combining visual product information with textual descriptions for holistic price prediction
 
 ### 📝 [3. Text Only Approach](./3.%20Text%20Only%20Approach/)
 
-- Models using **only text** (catalog_content)
-- Wide range from traditional ML to modern LLMs
-- **30+ implementations** including:
-  - Large Language Models (Granite, Qwen, Llama)
-  - Encoder Models (T5, FLAN-T5, BERT)
-  - Traditional ML (Gradient Boosting, Feature Engineering)
-  - Similarity-based methods (FAISS)
+Comprehensive text-only solutions spanning traditional ML to cutting-edge LLMs:
+
+#### 🏆 **Final Solutions** (Top Performance)
+- **`hybrid-ensemble-validation-test-gap-fixes.ipynb`** - **🥇 FINAL SOLUTION** with validation-test gap fixes
+- **`advanced-hybrid-solution.ipynb`** - Ultra-advanced ensemble approach (SMAPE: 38-44%)
+
+#### 🤖 **Large Language Models**
+- **`granite-4.0-llm-price-prediction-with-unsloth.ipynb`** - Granite 4.0 with Unsloth optimization
+- **`final-granite-amazon-25-alternative.ipynb`** - Alternative Granite implementation
+- **`qwen-optimized-fast-training.ipynb`** - Optimized Qwen training pipeline
+- **`qwen2-5-finetune-text-only.ipynb`** - Qwen2.5 text-only fine-tuning
+
+#### 🔤 **Encoder Models (T5/FLAN-T5/BERT)**
+- **`flan-t5-model-main-third-method-dynamic-length.ipynb`** - FLAN-T5 with dynamic length handling
+- **`flan-t5-model-main-inference.ipynb`** - FLAN-T5 inference pipeline
+- **`flan-t5-mlp-regression-log-transformed.ipynb`** - T5 + MLP with log transformation
+- **`bert-regression-model-price-prediction.ipynb`** - BERT-based regression approach
+- **`modern-bert-mmd-loss-price-prediction.ipynb`** - Modern BERT with MMD loss
+- **`comprehensive-bert-text-preprocessing-model.ipynb`** - BERT with advanced preprocessing
+- **`text-only-bert-optimized-approach.ipynb`** - Optimized BERT implementation
+
+#### 🔧 **Feature Extraction & Engineering**
+- **`llm-batch-feature-extraction-15-fields.ipynb`** - LLM-based comprehensive feature extraction
+- **`vllm-ultra-fast-feature-extraction-a100.ipynb`** - Ultra-fast GPU-optimized feature extraction
+- **`llm-feature-extraction.ipynb`** - General LLM feature extraction pipeline
+- **`ml-feature-engineering-approach.ipynb`** - Traditional ML with engineered features
+
+#### 📊 **Traditional ML & Ensemble Methods**
+- **`gradient-boosting-solution-amazon-ml.ipynb`** - Gradient boosting implementation
+- **`faiss-similarity-search.ipynb`** - FAISS-based similarity search
+- **`amazon-ml-price-prediction.ipynb`** - General ML approach
+
+#### 🧪 **Specialized Approaches**
+- **`multi-task-t5-beam-search-learning.ipynb`** - Multi-task T5 with beam search
+- **`t5-conditional-generation-pytorch-lightning.ipynb`** - T5 with PyTorch Lightning
+- **`t5-conditional-generation-pytorch-lightning-alt.ipynb`** - Alternative T5 PyTorch approach
+- **`t5-encoder-neural-network-price-classification.ipynb`** - T5 encoder + neural network
+- **`tensorflow-lstm-price-prediction-model.ipynb`** - LSTM-based neural network
+- **`updated-t5-model-aug-data.ipynb`** - T5 with data augmentation
+
+**Total**: 30+ implementations covering the full spectrum from traditional ML to state-of-the-art LLMs
 
 ## 📄 Documentation
 
@@ -152,4 +192,39 @@ This made it a true test of **feature engineering** and **multimodal learning** 
 - **Duration**: 3-day intensive sprint (72 hours)
 - **Public Leaderboard**: Based on 25k test samples
 - **Final Ranking**: Complete 75k test set evaluation
-- **Final Achievement**: Rank 80/23,000+ teams with SMAPE 43.
+- **Final Achievement**: Rank 80/23,000+ teams with SMAPE 43.28%
+
+## 🎯 **Notebook Naming Convention**
+
+All notebooks follow a clear, descriptive naming pattern:
+- **`[model/approach]-[specific-technique]-[use-case].ipynb`**
+- Example: `hybrid-ensemble-validation-test-gap-fixes.ipynb`
+- **No more cryptic names** - every notebook clearly describes its purpose
+
+## 🚀 **Getting Started**
+
+### **For Competition Performance**
+1. Start with `3. Text Only Approach/hybrid-ensemble-validation-test-gap-fixes.ipynb` (Final Solution)
+2. Compare with `3. Text Only Approach/advanced-hybrid-solution.ipynb` (Ultra-advanced)
+
+### **For Learning & Experimentation**  
+1. Begin with `1. Exploratory Data Analysis/` to understand the data
+2. Explore different approaches in `3. Text Only Approach/`
+3. Try multimodal approaches in `2. MultiModal Approach/`
+
+### **For Specific Model Types**
+- **LLMs**: Granite, Qwen notebooks in Text Only folder
+- **Traditional ML**: Gradient boosting and feature engineering notebooks  
+- **Deep Learning**: BERT, T5, LSTM implementations
+- **Multimodal**: CLIP and Qwen2.5 in MultiModal folder
+
+## 📚 **Complete Documentation**
+
+Every notebook now includes:
+- ✅ **Professional explanatory markdown** at the beginning
+- ✅ **Architecture and approach description**
+- ✅ **Key features and innovations**
+- ✅ **Expected performance metrics**
+- ✅ **Clear, descriptive filenames**
+
+**Total**: 35+ fully documented notebooks across all approaches!

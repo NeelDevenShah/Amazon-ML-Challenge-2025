@@ -4,24 +4,33 @@ This folder contains notebooks focused on understanding the data, feature explor
 
 ## Contents:
 
-### 🔍 **diagnostic-analysis.ipynb**
+### 🔍 **`diagnostic-analysis.ipynb`**
 
-- Diagnostic analysis to understand what features actually predict price
-- Brand overlap analysis between train/test
-- Feature importance analysis
-- Investigation of validation-test gap
+- **Purpose**: Deep diagnostic analysis to understand core price prediction factors
+- **Key Features**: Brand overlap analysis, feature importance, validation-test gap investigation
+- **Impact**: Critical insights that guided all subsequent modeling approaches
+- **Techniques**: Statistical analysis, correlation studies, distribution comparisons
 
-### 🛠️ **feature-engineering.ipynb**
+### 🛠️ **`feature-engineering.ipynb`**
 
-- Feature extraction and engineering techniques
-- Text processing and feature creation
-- Data preprocessing methods
+- **Purpose**: Advanced feature extraction and engineering pipeline
+- **Key Features**: Text processing, quantitative feature creation, categorical encoding
+- **Impact**: Foundational preprocessing techniques used across all models
+- **Techniques**: Regex parsing, numerical transformations, feature scaling
 
-### 📋 **classification-idea.ipynb**
+### 📋 **`classification-idea.ipynb`**
 
-- Classification approach exploration
-- Price binning strategies
-- Classification model experiments
+- **Purpose**: Exploration of price classification vs regression approaches
+- **Key Features**: Price binning strategies, classification model experiments
+- **Impact**: Validated that regression was the optimal approach for this challenge
+- **Techniques**: Stratified sampling, multi-class classification, threshold optimization
+
+### 📊 **`exploratory-data-analysis-visualization.ipynb`**
+
+- **Purpose**: Comprehensive visual exploration of the dataset
+- **Key Features**: Price distributions, text analysis, product categorization
+- **Impact**: Revealed key patterns in product pricing and text characteristics
+- **Techniques**: Data visualization, statistical summaries, pattern recognition
 
 ## Purpose
 

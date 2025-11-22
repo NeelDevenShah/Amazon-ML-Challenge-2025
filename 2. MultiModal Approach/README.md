@@ -4,19 +4,29 @@ This folder contains models that use both **text** and **image** inputs for pric
 
 ## Contents:
 
-### 🎯 **brand-image-solution.ipynb**
+### 🎯 **`multimodal-brand-clip-image-price-prediction.ipynb`**
 
-- Brand + Image solution using miniCLIP for image processing
-- Combines text features (brand, quantity, pack count) with image embeddings
-- Uses LightGBM + XGBoost ensemble
-- Focus on features that actually predict price
+- **Purpose**: Advanced multimodal solution combining visual and textual information
+- **Architecture**: CLIP-based image encoding + text feature extraction + ensemble ML
+- **Key Features**: 
+  - Brand extraction and encoding
+  - Product image processing with CLIP embeddings
+  - Quantity and pack count parsing
+  - LightGBM + XGBoost ensemble
+- **Performance**: Enhanced accuracy through visual context understanding
+- **Techniques**: Computer vision, feature fusion, gradient boosting ensemble
 
-### 🤖 **qwen2-5-finetune-multimodal.ipynb**
+### 🤖 **`qwen2-5-finetune-multimodal.ipynb`**
 
-- Qwen2.5 model fine-tuned for multimodal input
-- Uses both catalog content (text) and product images
-- Image downloading and preprocessing pipeline
-- Vision-language model approach
+- **Purpose**: State-of-the-art vision-language model fine-tuning
+- **Architecture**: Qwen2.5 multimodal transformer fine-tuned for price prediction
+- **Key Features**:
+  - End-to-end multimodal learning
+  - Image downloading and preprocessing pipeline
+  - Joint text-image representation learning
+  - Direct price regression from multimodal inputs
+- **Performance**: Leverages pre-trained vision-language understanding
+- **Techniques**: Transfer learning, multimodal transformers, fine-tuning optimization
 
 ## Key Features
 

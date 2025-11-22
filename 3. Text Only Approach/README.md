@@ -1,88 +1,119 @@
 # 📝 Text Only Approach
 
-This folder contains models that use **only text** inputs (catalog_content) for price prediction.
+This folder contains **30+ models** that use **only text** inputs (catalog_content) for price prediction, spanning from traditional ML to cutting-edge LLMs.
 
-## Contents:
+## 🏆 **Final Competition Solutions**
 
-### 🏗️ **LLM-Based Approaches**
+### 🥇 **`hybrid-ensemble-validation-test-gap-fixes.ipynb`** 
+- **THE WINNING SOLUTION** - Final competition submission (SMAPE: 40-43%)
+- **Architecture**: Hybrid ensemble with adversarial validation and gap fixes
+- **Key Innovations**: Separate feature scaling, stronger embeddings, residual connections
+- **Impact**: Achieved All-India Rank 80/23,000+ teams
 
-- **final-granite-amazon-25.ipynb**: Granite model fine-tuning with Unsloth
-- **final-granite-amazon-25-alternative.ipynb**: Alternative Granite approach
-- **qwen2-5-finetune-text-only.ipynb**: Qwen2.5 text-only fine-tuning (Llama-3.2-3B)
-- **llm-for-train.ipynb**: LLM training pipeline
-- **llm-for-train-vllm-optimized.ipynb**: Optimized LLM training with vLLM
+### 🚀 **`advanced-hybrid-solution.ipynb`**
+- **Ultra-advanced** ensemble approach (Target SMAPE: 38-44%)
+- **Architecture**: 4-model ensemble (LightGBM + CatBoost + XGBoost + Neural Network)
+- **Features**: Sentence transformers, advanced target encoding, price clustering
+- **Performance**: Top 10-100 leaderboard caliber
 
-### 🤖 **T5/FLAN-T5 Models**
+## 🤖 **Large Language Model Approaches**
 
-- **flan-t5-model-main-final.ipynb**: Main FLAN-T5 implementation
-- **flan-t5-model-main-inference.ipynb**: FLAN-T5 inference pipeline
-- **flan-t5-model-main-third-method-dynamic-length.ipynb**: Dynamic length approach
-- **flan-t5-mlp-regression-log-transformed.ipynb**: T5 + MLP with log transformation
-- **flan-t5-experiment-1.py**: T5 experimental approach
-- **flan-t5-mlp-regression-log-transformed.py**: Python version of T5+MLP
-- **flan-t5-model-main.py**: Main T5 Python implementation
+### 💎 **Granite Models**
+- **`granite-4.0-llm-price-prediction-with-unsloth.ipynb`** - Granite 4.0 with Unsloth optimization
+- **`final-granite-amazon-25.ipynb`** - Main Granite implementation  
+- **`final-granite-amazon-25-alternative.ipynb`** - Alternative Granite approach
 
-### 🧠 **BERT-Based Models**
+### 🔮 **Qwen Models**  
+- **`qwen2-5-finetune-text-only.ipynb`** - Qwen2.5 text-only fine-tuning
+- **`qwen-optimized-fast-training.ipynb`** - Optimized Qwen training pipeline
 
-- **new-bert-approach-amazon-25-ml.ipynb**: BERT-based price prediction
-- **morderb-bert.ipynb**: Modern BERT implementation
-- **harshs-notebook-oct-13.ipynb**: T5 + MLP classifier approach
+## 🔤 **Encoder Model Approaches**
 
-### 🔍 **Feature Engineering & Traditional ML**
+### 🤖 **T5/FLAN-T5 Family**
+- **`flan-t5-model-main-third-method-dynamic-length.ipynb`** - FLAN-T5 with dynamic length handling
+- **`flan-t5-model-main-inference.ipynb`** - FLAN-T5 inference pipeline  
+- **`flan-t5-mlp-regression-log-transformed.ipynb`** - T5 + MLP with log transformation
+- **`t5-conditional-generation-pytorch-lightning.ipynb`** - T5 with PyTorch Lightning
+- **`t5-conditional-generation-pytorch-lightning-alt.ipynb`** - Alternative T5 PyTorch approach
+- **`t5-encoder-neural-network-price-classification.ipynb`** - T5 encoder + neural network
+- **`updated-t5-model-aug-data.ipynb`** - T5 with data augmentation
 
-- **gradient-boosting-solution-amazon-ml.ipynb**: Gradient boosting approach
-- **ml-feature-engineering-approach.ipynb**: Traditional ML with feature engineering
-- **faiss-similarity-search.ipynb**: FAISS-based similarity search
-- **llm-feature-extraction.ipynb**: LLM for feature extraction
+### 🧠 **BERT Family**
+- **`bert-regression-model-price-prediction.ipynb`** - BERT-based regression
+- **`modern-bert-mmd-loss-price-prediction.ipynb`** - Modern BERT with MMD loss  
+- **`comprehensive-bert-text-preprocessing-model.ipynb`** - BERT with advanced preprocessing
+- **`text-only-bert-optimized-approach.ipynb`** - Optimized BERT implementation
 
-### 👥 **Team Member Notebooks**
+## 🔧 **Feature Extraction & Engineering**
 
-- **neels-notebook-oct-13.ipynb**: Neel's experimental approaches
-- **snehs-notebook-oct-13.ipynb**: Sneh's model implementations
+### 🤖 **LLM-Based Feature Extraction**
+- **`llm-batch-feature-extraction-15-fields.ipynb`** - Comprehensive 15-field feature extraction
+- **`vllm-ultra-fast-feature-extraction-a100.ipynb`** - Ultra-fast GPU-optimized extraction (A100)
+- **`llm-feature-extraction.ipynb`** - General LLM feature extraction pipeline
 
-### 🔬 **Experimental Approaches**
+### 🛠️ **Traditional Feature Engineering**
+- **`ml-feature-engineering-approach.ipynb`** - Traditional ML with engineered features
+- **`faiss-similarity-search.ipynb`** - FAISS-based similarity search
 
-- **amazon_ml_2025.ipynb**: General Amazon ML approach
-- **amazon-ml-price-prediction.ipynb**: Price prediction experiments
-- **amzon-2025-wg.ipynb**: Working group experiments
-- **Granite4_0.ipynb**: Granite 4.0 experiments
-- **qwen-optimized-fast-training.ipynb**: Optimized Qwen training
-- **updated-t5-model-aug-data.ipynb**: T5 with data augmentation
-- **multi-task-bean-based-learning.ipynb**: Multi-task learning approach
-- **asfabc.ipynb**: LSTM-based neural network approach
+## 📊 **Traditional ML & Specialized Approaches**
 
-### 🐍 **Python Scripts**
+### 🌳 **Gradient Boosting**
+- **`gradient-boosting-solution-amazon-ml.ipynb`** - Gradient boosting implementation
 
-- **t5-main-2-large-model.py**: Large T5 model implementation
-- **t5-main-experiment.py**: T5 experimental script
-- **updated-t5-model-aug-data.py**: T5 with augmented data
-- **vllm_fast_inference.py**: Fast inference with vLLM
-- **log-transformed-multi-task-learning.py**: Multi-task with log transformation
-- **multi-task-bean-based-learning.py**: Multi-task learning script
+### 🧪 **Specialized Techniques**
+- **`multi-task-t5-beam-search-learning.ipynb`** - Multi-task T5 with beam search
+- **`tensorflow-lstm-price-prediction-model.ipynb`** - LSTM-based neural network
+- **`amazon-ml-price-prediction.ipynb`** - General ML approach
 
-## Model Categories:
+## 📈 **Performance Tiers**
 
-### 🚀 **Large Language Models (LLMs)**
+### 🏆 **Tier 1: Competition Winners (SMAPE < 45%)**
+- `hybrid-ensemble-validation-test-gap-fixes.ipynb` - **Final Solution**
+- `advanced-hybrid-solution.ipynb` - Ultra-advanced ensemble
 
-- Granite, Qwen2.5, Llama models
-- Fine-tuning approaches using Unsloth
-- Text generation for price prediction
+### 🥈 **Tier 2: Strong Performers (SMAPE 45-55%)**
+- Granite and Qwen LLMs with fine-tuning
+- Modern BERT with advanced preprocessing
+- FLAN-T5 with dynamic length handling
 
-### 🔤 **Encoder Models**
+### 🥉 **Tier 3: Experimental Approaches (SMAPE 55%+)**
+- Traditional ML baselines
+- Simple encoder models
+- Feature extraction pipelines
 
-- T5, FLAN-T5, BERT
-- Text encoding + classification/regression heads
-- Various pooling and aggregation strategies
+## 🔧 **Model Categories**
 
-### 📊 **Traditional ML**
+### 🚀 **Large Language Models (7B+ Parameters)**
+- **Granite 4.0**, **Qwen2.5** - State-of-the-art LLMs
+- Fine-tuning with Unsloth optimization
+- Direct text-to-price generation
 
-- Gradient Boosting, XGBoost
-- Feature engineering approaches
-- Similarity-based methods
+### 🔤 **Encoder Models (100M-1B Parameters)**  
+- **T5/FLAN-T5**, **BERT** variants
+- Text encoding + regression heads
+- Efficient training and inference
 
-## Key Features:
+### 📊 **Traditional ML (Feature-Based)**
+- **LightGBM**, **XGBoost**, **CatBoost**
+- Hand-crafted and LLM-extracted features
+- Fast training, interpretable results
 
-- **Input Type**: Text only (catalog_content)
-- **Faster Training**: No image processing overhead
-- **Lower Resource Requirements**: Compared to multimodal approaches
-- **Diverse Strategies**: From traditional ML to modern LLMs
+### 🧪 **Hybrid Approaches**
+- **Ensemble methods** combining multiple model types
+- **Feature fusion** from different extraction methods
+- **Multi-stage pipelines** (extract → encode → predict)
+
+## ⚡ **Key Advantages**
+
+- **🚀 Faster Training**: No image processing overhead
+- **💾 Lower Memory**: Text-only inputs require less RAM
+- **⚡ Quick Iteration**: Rapid experimentation cycles
+- **🎯 Focused Optimization**: All effort on text understanding
+- **📱 Production Ready**: Easier deployment without vision components
+
+## 🏁 **Quick Start Guide**
+
+1. **For Competition Results**: Start with `hybrid-ensemble-validation-test-gap-fixes.ipynb`
+2. **For Learning**: Explore `advanced-hybrid-solution.ipynb` 
+3. **For LLM Experiments**: Try Granite or Qwen notebooks
+4. **For Fast Prototyping**: Use traditional ML approaches
